@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Typing Speed Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 40px;
+      background: #f4f6f8;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 70%;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    textarea {
+      width: 90%;
+      height: 100px;
+      font-size: 16px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    #startBtn { background: lightgreen; }
+    #submitBtn { background: lightblue; }
+    .stats { margin-top: 20px; font-size: 18px; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>TYPE SPEED TESTING</h2>
+    <p id="sentence">JavaScript is a simple and powerful programming language</p>
+    
+    <textarea id="textInput" placeholder="Type here..."></textarea><br>
+    <button id="startBtn">Start Test</button>
+    <button id="submitBtn">Submit</button>
+    
+    <div class="stats">
+      <p id="timer">⏳ Time: 0 sec</p>
+      <p id="count">📄 Words: 0 | 📑 Lines: 0</p>
+      <p id="result"></p>
+    </div>
+  </div>
+
+  <script>
+    const sentence = document.getElementById("sentence").innerText;
+    const textInput = document.getElementById("textInput");
+    const timerLabel = document.getElementById("timer");
+    const countLabel = document.getElementById("count");
+    const resultLabel = document.getElementById("result");
+    let startTime, timer, running = false;
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      textInput.value = "";
+      resultLabel.innerText = "";
+      startTime = new Date().getTime();
+      running = true;
+      let seconds = 0;
+      timer = setInterval(() => {
+        if (running) {
+          seconds++;
+          timerLabel.innerText = `⏳ Time: ${seconds} sec`;
+          updateCounts();
+        }
+      }, 1000);
+    });
+
+    document.getElementById("submitBtn").addEventListener("click", () => {
+      running = false;
+      clearInterval(timer);
+      const endTime = new Date().getTime();
+      const typed = textInput.value.trim();
+      const timeTaken = (endTime - startTime) / 1000;
+
+      const words = typed.length > 0 ? typed.split(/\s+/) : [];
+      const numWords = words.length;
+      const wpm = (numWords / timeTaken) * 60;
+
+      // Accuracy
+      const originalWords = sentence.split(" ");
+      let correct = 0;
+      for (let i = 0; i < Math.min(words.length, originalWords.length); i++) {
+        if (words[i] === originalWords[i]) correct++;
+      }
+      const accuracy = (correct / originalWords.length) * 100;
+
+      resultLabel.innerHTML = 
+        `⏳ Time Taken: ${timeTaken.toFixed(2)} sec<br>
+         📄 Words Typed: ${numWords}<br>
+         📑 Lines Typed: ${typed.split("\n").length}<br>
+         ⚡ Speed: ${wpm.toFixed(2)} WPM<br>
+         🎯 Accuracy: ${accuracy.toFixed(2)}%`;
+    });
+
+    function updateCounts() {
+      const typed = textInput.value.trim();
+      const words = typed.length > 0 ? typed.split(/\s+/) : [];
+      const lines = typed.split("\n").length;
+      countLabel.innerText = `📄 Words: ${words.length} | 📑 Lines: ${lines}`;
+    }
+  </script>
+</body>
+</html>
