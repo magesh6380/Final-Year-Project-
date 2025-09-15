@@ -34,9 +34,11 @@
       border-radius: 8px;
       border: none;
       cursor: pointer;
+      transition: 0.3s;
     }
-    #startBtn { background: lightgreen; }
+    #startBtn { background: red; color: white; }
     #submitBtn { background: lightblue; }
+    #restartBtn { background: orange; color: white; }
     .stats { margin-top: 20px; font-size: 18px; color: #333; }
   </style>
 </head>
@@ -48,6 +50,7 @@
     <textarea id="textInput" placeholder="Type here..."></textarea><br>
     <button id="startBtn">Start Test</button>
     <button id="submitBtn">Submit</button>
+    <button id="restartBtn">Restart</button>
     
     <div class="stats">
       <p id="timer">⏳ Time: 0 sec</p>
@@ -62,6 +65,8 @@
     const timerLabel = document.getElementById("timer");
     const countLabel = document.getElementById("count");
     const resultLabel = document.getElementById("result");
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
     let startTime, timer, running = false;
 
     document.getElementById("startBtn").addEventListener("click", () => {
@@ -70,6 +75,7 @@
       startTime = new Date().getTime();
       running = true;
       let seconds = 0;
+      startBtn.style.background = "green"; // Change color to green when test starts
       timer = setInterval(() => {
         if (running) {
           seconds++;
@@ -104,6 +110,16 @@
          📑 Lines Typed: ${typed.split("\n").length}<br>
          ⚡ Speed: ${wpm.toFixed(2)} WPM<br>
          🎯 Accuracy: ${accuracy.toFixed(2)}%`;
+    });
+
+    restartBtn.addEventListener("click", () => {
+      clearInterval(timer);
+      running = false;
+      textInput.value = "";
+      timerLabel.innerText = "⏳ Time: 0 sec";
+      countLabel.innerText = "📄 Words: 0 | 📑 Lines: 0";
+      resultLabel.innerText = "";
+      startBtn.style.background = "red"; // Reset Start button color to red
     });
 
     function updateCounts() {
